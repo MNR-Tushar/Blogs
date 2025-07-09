@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 class Category(models.Model):
     title=models.CharField(max_length=250,unique=True)
-    slug=models.SlugField(null=True)
+    slug=models.SlugField(null=True,blank=True)
     created_data=models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -17,7 +17,7 @@ class Category(models.Model):
 
 class Tags(models.Model):
     title=models.CharField(max_length=250)
-    slug=models.SlugField(null=True)
+    slug=models.SlugField(null=True,blank=True)
     created_data=models.DateField(auto_now_add=True)
     
     def __str__(self):
@@ -33,7 +33,7 @@ class Blog(models.Model):
     tags=models.ManyToManyField(Tags,related_name='tag_blogs',blank=True)
     like=models.ManyToManyField(User,related_name='user_like',blank=True)
     title=models.CharField(max_length=250)
-    slug=models.SlugField(null=True)
+    slug=models.SlugField(null=True,blank=True)
     banner=models.ImageField(upload_to='blog_banners')
     description=models.TextField()
     created_date=models.DateField(auto_now_add=True)
