@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import Blog, Category, Reply,Tags,Comment
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 from .forms import TextForm
+from django.db.models import Q
 
 def home(request):
     blogs=Blog.objects.order_by('-created_date')
@@ -102,4 +103,27 @@ def add_reply(request,blog_id,comment_id):
     return redirect('blog_details', slug=blog.slug)
     
     
-    
+def search_blogs(request):
+
+    search_key=request.GET.get('search',None)
+    if search_key:
+        blogs=Blog.objects.filter(
+            Q(title__icontains=search_key)|
+            Q(category__title__icontains=search_key)|
+            Q(user__username__icontains=search_key)|
+            Q(tags__title__icontains=search_key)
+        ).distinct()
+
+        context={
+            "blogs":blogs,
+            "search_key":search_key,
+        }
+
+        return render(request,'search.html',context)
+    else:
+        blogs=Blog.objects.order_by('-created_date')
+        context={
+            "blogs":blogs,
+        }
+        return render(request,'search.html',context)
+
