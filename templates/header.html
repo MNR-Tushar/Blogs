@@ -18,7 +18,7 @@
               </li>
               
               <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Category
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -27,10 +27,20 @@
           {% endfor %}
         </div>
         </li>
+        {% if request.user.is_authenticated %}
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Profile</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="">My Profile</a>
+          <a class="dropdown-item" href="">Notification</a>
+          <a class="dropdown-item" href="">Logout</a>
+          </div>
+          {% else %}
               <li class="nav-item">
-                <a class="nav-link" href="contact.html">Login</a>
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
               </li>
-            </ul>
+          {% endif %}
+          </ul>
             <form class="form-inline d-flex-nowrap my-2 ml-auto search-form" action="{% url 'search_blogs' %}" method="GET">
               <input class="form-control px-3" name="search" type="text" placeholder="Search blogs" required></input>
               <button class="btn btn-primary ml-1">Search</button>

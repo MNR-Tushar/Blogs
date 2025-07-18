@@ -9,7 +9,7 @@ class User(AbstractUser):
     profile_image=models.ImageField(null=True,blank=True,upload_to="profile_images")
 
     REQUIRED_FIELDS=["email"]
-    objects=CustomUserManager
+    objects=CustomUserManager()
 
     def __str__(self):
         return self.username

@@ -872,7 +872,7 @@ footer p a:hover {
 	height: 46px;
 	border: 1px solid #eee;
 	font-size: 13px;
-	text-transform: uppercase;
+	text-transform:none;
 	font-weight: 500;
 	color: #7a7a7a;
 	outline: none;
@@ -885,7 +885,7 @@ footer p a:hover {
 	height: 46px;
 	border: 1px solid #eee;
 	font-size: 13px;
-	text-transform: uppercase;
+	text-transform: none;
 	font-weight: 500;
 	color: #7a7a7a;
 	outline: none;
@@ -913,6 +913,19 @@ footer p a:hover {
 	transition: all .3s;
 	border: none;
 	outline: none;
+}
+
+.contact-us .contact-form .btn-primary {
+    display: inline-block;
+    background-color: #f48840;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 20px;
+    text-transform: uppercase;
+    transition: all .3s;
+    border: none;
+    outline: none;
 }
 
 .contact-us .contact-form button:hover {
