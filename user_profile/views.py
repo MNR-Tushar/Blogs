@@ -2,8 +2,10 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from .forms import UserRegistrationForm,LoginForm
 from django.contrib.auth import login,logout,authenticate
+from .decorators import not_logged_in_required
 # Create your views here.
 
+@not_logged_in_required
 def login_user(request):
 
     form=LoginForm()
@@ -27,6 +29,7 @@ def login_user(request):
 
     return render(request,'login.html',context)
 
+@not_logged_in_required
 def register_user(request):
 
     form=UserRegistrationForm()
@@ -44,3 +47,9 @@ def register_user(request):
     }
 
     return render(request,'registration.html',context)
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+    
+    
