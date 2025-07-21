@@ -2,6 +2,7 @@ from urllib import request
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Blog, Category, Reply,Tags,Comment
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
+from django.contrib.auth.decorators import login_required
 from .forms import TextForm
 from django.db.models import Q
 
@@ -88,6 +89,7 @@ def blog_details(request,slug):
 
     return render(request,'blog_details.html',context)
 
+@login_required(login_url='login')
 def add_reply(request,blog_id,comment_id):
     
     if request.method == "POST":
@@ -126,4 +128,5 @@ def search_blogs(request):
             "blogs":blogs,
         }
         return render(request,'search.html',context)
+
 

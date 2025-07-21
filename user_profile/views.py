@@ -1,8 +1,9 @@
 from django.contrib import messages
-from django.shortcuts import redirect, render
-from .forms import UserRegistrationForm,LoginForm
+from django.shortcuts import get_object_or_404, redirect, render
+from .forms import UserRegistrationForm,LoginForm,UserProfileUpdateForm,ProfilePictureUpdateForm
 from django.contrib.auth import login,logout,authenticate
 from .decorators import not_logged_in_required
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 @not_logged_in_required
@@ -51,5 +52,43 @@ def register_user(request):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+from .models import User
+
+@login_required(login_url='login')
+def profile(request):
+    account=get_object_or_404(User,pk=request.user.pk)
+    form=UserProfileUpdateForm(instance=account)
+
+    if request.method=="POST":
+        if request.user.pk!=account.pk:
+            return redirect('home')
+        form=UserProfileUpdateForm(request.POST,instance=account)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Profile has been updated successfuly")
+            return redirect('profile')
+        else:
+            print(form.errors)
+
+    context={
+        "account":account,
+        "form":form,
+    }
+    return render(request,'profile.html',context)
     
-    
+@login_required
+def change_profile_picture(request):
+    if request.method == 'POST':
+        form=ProfilePictureUpdateForm(request.POST, request.FILES)
+        if form.is_valid():
+            image=request.FILES['profile_image']
+            user=get_object_or_404(User,pk=request.user.pk)
+
+            if request.user.pk !=user.pk:
+                return redirect('home')
+            
+            user.profile_image=image
+            user.save()
+            messages.success(request,"Profile image updated successfully")
+            return redirect('profile')
