@@ -10,5 +10,6 @@ urlpatterns = [
     path('add_reply/<int:blog_id>/<int:comment_id>/',add_reply,name='add_reply'),
     path('search_blogs/',search_blogs,name='search_blogs'),
     path('my_blogs/',my_blogs,name='my_blogs'),
-    path('add_blogs/',add_blog,name='add_blog'),
+    path('add_blog/',add_blog,name='add_blog'),
+    path('update_blog/<str:slug>/',update_blog,name='update_blog'),
 ]

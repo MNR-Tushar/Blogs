@@ -12,13 +12,13 @@
                         <img class="rounded rounded-circle profile-picture" src="{{request.user.get_profile_picture}}" alt="">
                         <ul class="text-center py-3">
                             <li class="py-2">
-                                <span>Posts: <strong></strong></span>
+                                <span>Posts: <strong>{{account.user_blogs.count}}</strong></span>
                             </li>
                             <li class="py-2">
-                                <span>Follwers: <strong></strong></span>
+                                <span>Follwers: <strong>{{account.user_followers.count}}</strong></span>
                             </li>
                             <li class="py-2">
-                                <span>Following: <strong></strong></span>
+                                <span>Following: <strong>{{account.user_follows.count}}</strong></span>
                             </li>
                         </ul>
                     </div>

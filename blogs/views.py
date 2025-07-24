@@ -136,6 +136,17 @@ def my_blogs(request):
 
     paginator=Paginator(queryset,3)
     page=request.GET.get('page',1)
+    delete=request.GET.get('delete',None)
+
+    if delete:
+        blog=get_object_or_404(Blog, pk=delete)
+
+        if request.user.pk!=blog.user.pk:
+            return redirect('home')
+        
+
+        blog.delete()
+        return redirect('my_blogs')
     try:
         blogs=paginator.page(page)
     except EmptyPage:
@@ -176,7 +187,7 @@ def add_blog(request):
 
                 else:
                     if tag != '':
-                        new_tag = Tag.objects.create(
+                        new_tag = Tags.objects.create(
                             title=tag.strip(),
                             slug=slugify(tag.strip())
                         )
@@ -190,3 +201,51 @@ def add_blog(request):
         "form":form,
     }
     return render(request,'add_blog.html',context)
+
+@login_required(login_url='login')
+def update_blog(request,slug):
+    
+    blogs=get_object_or_404(Blog,slug=slug)
+    form=AddBlogForm(instance=blogs)
+
+    if request.method == "POST":
+        form=AddBlogForm(request.POST,request.FILES,instance=blogs)
+
+        if form.is_valid():
+
+            if request.user.pk!=blog.user.pk:
+                return redirect('home')
+            tags = request.POST['tags'].split(',')
+            user=get_object_or_404(User,pk=request.user.pk)
+            category=get_object_or_404(Category,pk=request.POST['category'])
+            blog=form.save(commit=False)
+            blog.user=user
+            blog.category=category
+            blog.save()
+
+            for tag in tags:
+                tag_input = Tags.objects.filter(
+                    title__iexact=tag.strip(),
+                    slug=slugify(tag.strip())
+                )
+                if tag_input.exists():
+                    t = tag_input.first()
+                    blog.tags.add(t)
+
+                else:
+                    if tag != '':
+                        new_tag = Tag.objects.create(
+                            title=tag.strip(),
+                            slug=slugify(tag.strip())
+                        )
+                        blog.tags.add(new_tag)
+
+            
+            return redirect('blog_details', slug=blog.slug)
+        else:
+            print(form.errors)
+    context={
+        "form":form,
+        "blogs":blogs,
+    }
+    return render(request,'update_blog.html',context)

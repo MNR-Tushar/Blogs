@@ -53,7 +53,7 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
-from .models import User
+from .models import Follow, User
 
 @login_required(login_url='login')
 def profile(request):
@@ -92,3 +92,43 @@ def change_profile_picture(request):
             user.save()
             messages.success(request,"Profile image updated successfully")
             return redirect('profile')
+
+def view_user_information(request,username):
+    account=get_object_or_404(User,username=username)
+    following=False
+
+
+
+    if request.user.is_authenticated:
+
+        if request.user.id==account.id:
+            return redirect("profile")
+
+
+        followers=account.followers.filter(followed_by_id=request.user.id)
+        if followers.exists():
+            following=True
+    context={
+        "account":account,
+        "following":following,
+    }
+    return render(request,'user_information.html',context)
+
+@login_required(login_url = "login")
+def follow_or_unfollow_user(request, user_id):
+    followed = get_object_or_404(User, id=user_id)
+    followed_by = get_object_or_404(User, id=request.user.id)
+
+    follow, created = Follow.objects.get_or_create(
+        followed=followed,
+        followed_by=followed_by
+    )
+
+    if created:
+        followed.followers.add(follow)
+
+    else:
+        followed.followers.remove(follow)
+        follow.delete()
+
+    return redirect("view_user_information", username=followed.username)
